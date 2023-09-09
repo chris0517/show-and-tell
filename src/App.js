@@ -13,7 +13,7 @@ function App() {
         }
 
         async function loadModel() {
-            const loadedModel = await tf.loadLayersModel('../asl_model/model.json');
+            const loadedModel = await tf.loadLayersModel('/asl_model/model.json');
             setModel(loadedModel);
         }
 
@@ -28,8 +28,8 @@ function App() {
         let image = tf.browser.fromPixels(canvas);
 
         // Preprocess the image
-        image = image.resizeNearestNeighbor([255, 255]);  // Resize to 255x255 pixels
-        image = image.toFloat().div(tf.scalar(255.0));   // Normalize to [0, 1]
+        image = image.resizeNearestNeighbor([100, 100]);  // Resize to 255x255 pixels
+        image = image.toFloat().div(tf.scalar(100.0));   // Normalize to [0, 1]
         image = image.expandDims(0);  // For batch input
 
         // Get prediction
