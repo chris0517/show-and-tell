@@ -3,6 +3,7 @@ import * as tf from "@tensorflow/tfjs";
 import "./index.css";
 
 import Button from "@material-ui/core/Button";
+import {Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import CameraIcon from "@material-ui/icons/PhotoCamera"; // Optional, if you want an icon on the button
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
     setupWebcam();
     loadModel();
   }, []);
+
+  const [openDialog, setOpenDialog] = React.useState(false); // State to control the dialog open/close
+  const [predictedLetter, setPredictedLetter] = React.useState(""); // State to store the predicted letter
 
   const handleCapture = () => {
     const canvas = canvasRef.current;
@@ -65,7 +69,8 @@ function App() {
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const predictedLetter = alphabet[predictedClass];
 
-      alert(`Predicted sign: ${predictedLetter}`);
+      setPredictedLetter(predictedLetter);
+      setOpenDialog(true); // Open the dialog
     }
   };
 
@@ -97,6 +102,22 @@ function App() {
         >
           Capture
         </Button>
+         Material-UI Dialog
+        <Dialog 
+            fullWidth
+            open={openDialog} onClose={() => setOpenDialog(false)}
+        >
+            <DialogTitle 
+            >Predicted Sign</DialogTitle>
+            <DialogContent>
+                <p> Predicted sign: {predictedLetter}</p>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={() => setOpenDialog(false)}>
+                Close
+            </Button>
+            </DialogActions>
+        </Dialog>
       </div>
     </div>
   );
