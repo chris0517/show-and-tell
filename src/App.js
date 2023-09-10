@@ -2,6 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import "./index.css";
 
+import Button from "@material-ui/core/Button";
+import CameraIcon from "@material-ui/icons/PhotoCamera"; // Optional, if you want an icon on the button
+
 function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -25,7 +28,28 @@ function App() {
   const handleCapture = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    // ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const videoWidth = videoRef.current.videoWidth;
+    const videoHeight = videoRef.current.videoHeight;
+
+    const aspectRatio = videoWidth / videoHeight;
+
+    let targetWidth = canvas.width;
+    let targetHeight = targetWidth / aspectRatio;
+
+    // if height gets too big, adjust width instead
+    if (targetHeight > canvas.height) {
+      targetHeight = canvas.height;
+      targetWidth = targetHeight * aspectRatio;
+    }
+    ctx.drawImage(
+      videoRef.current,
+      (canvas.width - targetWidth) / 2,
+      (canvas.height - targetHeight) / 2,
+      targetWidth,
+      targetHeight
+    );
     let image = tf.browser.fromPixels(canvas);
 
     // Preprocess the image
@@ -61,7 +85,18 @@ function App() {
           height="400"
         ></video>
         <canvas ref={canvasRef} width="400" height="400"></canvas>
-        <button onClick={handleCapture}>Capture</button>
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: "#EC255A",
+            color: "white",
+            marginBottom: "20px",
+          }}
+          startIcon={<CameraIcon />} // Optional, if you want an icon on the button
+          onClick={handleCapture}
+        >
+          Capture
+        </Button>
       </div>
     </div>
   );
